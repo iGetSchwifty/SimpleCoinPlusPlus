@@ -1,11 +1,11 @@
 # SimpleCoinPlusPlus
 A SimpleCoin implementation except in c++ purely for me to grasp some understanding. 
 
+This project was translated from Python into C++ using https://github.com/cosme12/SimpleCoin as a base.
+
 *** Note this project still needs some TLC before it is completely functional. ***
 
-https://github.com/cosme12/SimpleCoin
-
-Just a really simple, insecure and incomplete implementation of a blockchain for a cryptocurrency made in C++. The goal of this project is to make a working blockchain currency, keeping it as simple as posible, to be used as educational material.
+Just a really simple, insecure and incomplete implementation of a blockchain for a cryptocurrency. The goal of this project is to make a working blockchain currency, keeping it as simple as posible, to be used as educational material.
 
 >This project is just being made for fun. If you want to make your own cryptocurrency you should probably take a look at the [Bitcoin Repository](https://github.com/bitcoin/bitcoin).
 
