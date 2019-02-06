@@ -1,0 +1,6 @@
+.DS_Store
+.vscode/
+simpleCoin++/.DS_Store
+*.o
+app
+example.json
