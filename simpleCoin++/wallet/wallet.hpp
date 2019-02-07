@@ -39,7 +39,7 @@ class Wallet {
         int walletActionListener();
         void walletWrapper();
 
-        static const int valueFromHexChar (unsigned char *c) { 
+        static const int valueFromHexChar (const unsigned char *c) { 
             int returnVal = -1;
             for(int i = 0; i < 16; ++i) {
                 if(hexmap[i] == *c) {
@@ -53,7 +53,8 @@ class Wallet {
     public:
         Wallet(): client("localhost:3000"), shouldListen(true) {};
         ~Wallet(){
-            ShutDown();
+            shouldListen = false;
+            thread_ptr->detach();
         };
 
         void attachThread() {thread_ptr->join();};
@@ -61,19 +62,8 @@ class Wallet {
         void generate_ECDSA_keys();
         SignedTxtion sign_ECDSA_msg(std::string privateKey);
         void listen_to_actions();
-        void ShutDown() {
-            shouldListen = false;
-            thread_ptr->detach();
-        };
 
-        /*void toBinary(uint8_t a) {
-            uint8_t i;
-            for(i=0x80;i!=0;i>>=1)
-                printf("%c",(a&i)?'1':'0'); 
-        }*/
-
-        std::string hexStr(unsigned char *data, int len)
-        {
+        std::string hexStr(unsigned char *data, int len) {
             std::string s(len * 2, ' ');
             for (int i = 0; i < len; ++i) {
                 s[2 * i]     = hexmap[(data[i] & 0xF0) >> 4];
@@ -82,7 +72,7 @@ class Wallet {
             return s;
         }
 
-        static const void stringToRawData(std::string val, uint8_t* arrayToPopulate) {
+        static const void stringToRawData(std::string val, uint8_t arrayToPopulate[]) {
             for (int i = 0, Length = val.size(); i < Length - 1; i = i + 2) {
                 unsigned char newSub[2];
                 newSub[0] = val.substr(i,2)[0];
@@ -93,7 +83,7 @@ class Wallet {
                 if((hexVal1 != -1) && (hexVal2 != -1)) {
                     uint8_t dataChunk = ((dataChunk & ~0xFF) | hexVal1) << 4;
                     dataChunk = dataChunk | (hexVal2 & 0x0F);
-                    arrayToPopulate[i/2] = (dataChunk);
+                    arrayToPopulate[i/2] = dataChunk;
                 }
             }
         }
