@@ -27,14 +27,14 @@ class Miner : public BaseDataSetup
     public:
         //        Init the variable for mining..   Also add the first block and create a blockchain!
         Miner() : should_mine_transactions(false), bc_obj(BlockChain(create_genesis_block())), networkName("network"),
-        MINER_ADDRESS("03f644177f760b34088ff9330832444d26aba8999599d8905f45543544489289cd") {};
+        MINER_ADDRESS("03f644177f760b34088ff9330832444d26aba8999599d8905f45543544489289cd") {}
         //PrivateKey: 2501f54eb5111affe05833126f447be9742f2bea3570586a74b9aaa351bdcd54
 
         ~Miner(){
             bc_obj.Chain.clear();
             NODE_PENDING_TRANSACTIONS.clear();
             PEER_NODE_URLS.clear();
-        };
+        }
 
         Block create_genesis_block();
         std::vector<BlockChain> find_new_chains();
@@ -44,9 +44,9 @@ class Miner : public BaseDataSetup
         bool validateSignature(nlohmann::json jsonObject);
         void appendTransactionToQueue(Transaction transactionToBeProcessed) {
             NODE_PENDING_TRANSACTIONS.push_back(transactionToBeProcessed);
-        };
-        void setMiningStatus(bool statusToSet) {this->should_mine_transactions = statusToSet;};
-        bool shouldMiningOccur() {return this->should_mine_transactions;};
+        }
+        void setMiningStatus(bool statusToSet) {this->should_mine_transactions = statusToSet;}
+        bool shouldMiningOccur() {return this->should_mine_transactions;}
 
         std::string getGenesisBlock(){
             if(bc_obj.Chain.size() > 0){
@@ -70,7 +70,7 @@ class Miner : public BaseDataSetup
                 }));
             };
             return j.dump();
-        };
+        }
 
         std::string blockChainToJSON() {
             nlohmann::json j;
@@ -85,7 +85,7 @@ class Miner : public BaseDataSetup
                 }));
             };
             return j.dump();
-        };
+        }
 
         BlockChain convertJSON_BlockChain_To_Obj(nlohmann::json jsonObj) {
             BlockChain bc_local_ref = BlockChain();
@@ -101,7 +101,7 @@ class Miner : public BaseDataSetup
             catch(const std::exception &e) {
                 return BlockChain();
             }
-        };
+        }
 
         Block blockJSONToObj(nlohmann::json jsonObj) {
             int lclIndex = jsonObj.at("index").get<int>();
@@ -113,7 +113,7 @@ class Miner : public BaseDataSetup
                 data.transactions.push_back(transactionJSONToObj(jsonObj.at("transactions")[i]));
             }
             return Block(lclIndex, timestamp, data, previous_hash);
-        };
+        }
 
         Transaction transactionJSONToObj(nlohmann::json jsonObj) {
             Transaction txtionToReturn = Transaction();
@@ -121,7 +121,7 @@ class Miner : public BaseDataSetup
             txtionToReturn.TO = jsonObj.at("to").get<std::string>();
             txtionToReturn.amount = jsonObj.at("amount").get<int>();
             return txtionToReturn;
-        };
+        }
 }; 
 #endif
 

@@ -13,7 +13,7 @@ Miner::Block Miner::create_genesis_block(){
     dataToInit.proof_of_work = 9;
     dataToInit.transactions = vector<Transaction>(); //EMPTY TRANSACTIONS
     return Miner::Block(0, ms.count(), dataToInit, "0");
-};
+}
 
 vector<Miner::BlockChain> Miner::find_new_chains(){
     vector<Miner::BlockChain> blockChainsToReturn = vector<Miner::BlockChain>();
@@ -33,7 +33,7 @@ vector<Miner::BlockChain> Miner::find_new_chains(){
         cerr << "Client request error: " << e.what() << endl;
     }
     return blockChainsToReturn;
-};
+}
 
 // should return nullptr if we should keep searching for proof
 // else it will contain the longest blockchain we need to Give up searching for proof, update chain and start over
@@ -47,7 +47,7 @@ Miner::BlockChain* Miner::consensus(){
         }
     }
     return blockChainToReturn;
-};
+}
 
 Miner::ProofOfWork Miner::prove_the_work(long last_proof){
     ProofOfWork powToReturn = ProofOfWork();
@@ -74,7 +74,7 @@ Miner::ProofOfWork Miner::prove_the_work(long last_proof){
         powToReturn.proof = incrementor;
     }
     return powToReturn;
-};
+}
 
 //
 //  Analyze this function and determine how it will affect memory over time...
@@ -120,7 +120,7 @@ int Miner::mine() {
         //cout.flush();
     }
     return 0;
-};
+}
 
 bool Miner::validateSignature(json jsonObject) {
     bool returnVal = false;

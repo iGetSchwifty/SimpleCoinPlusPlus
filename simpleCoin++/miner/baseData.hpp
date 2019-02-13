@@ -34,14 +34,15 @@ class BaseDataSetup {
                     }
                     data_converted_to_string = j.dump();
                     return data_converted_to_string;
-                };
+                }
+                
                 std::string hash_block(){
                     //
                     //  TODO: NEED TO UTF ENCODE THE PREVIOUS_HASH
                     //
                     std::string stringToSha = std::to_string(index) + std::to_string(timestamp)+ convertDataToJSONString(data) + previous_hash;
                     return sha256(stringToSha);// yolo, leaving it as a string for now
-                };
+                }
 
             public:
                 int index;
@@ -57,15 +58,14 @@ class BaseDataSetup {
                     this->data = data;
                     this->previous_hash = previous_hash;
                     this->hash = hash_block();
-                };
-                ~Block(){};
+                }
         };
         struct BlockChain {
             std::vector<Block> Chain;
             BlockChain(Block init_block){
                 Chain.push_back(init_block);
             };
-            BlockChain(){};
+            BlockChain(){}
             ~BlockChain(){
                 Chain.clear();
             };
@@ -73,8 +73,6 @@ class BaseDataSetup {
         struct ProofOfWork {
             int proof;
             BlockChain bc_obj;
-            ProofOfWork(){};
-            ~ProofOfWork(){};
         };
 };
 #endif
