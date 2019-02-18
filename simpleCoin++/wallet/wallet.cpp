@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../libs/base64/base64.h"
+#include "../libs/easy-ecc/ecc.h"
 
 using json = nlohmann::json;
 using namespace std;
@@ -12,8 +13,10 @@ const char Wallet::hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7',
 
 bool Wallet::send_transaction(Wallet::TxtionDetails details) {
     bool returnVal = false;
-
-    SignedTxtion signedTxtion = sign_ECDSA_msg(details.privateKey);
+    Wallet::SignedTxtion signedTxtion = sign_ECDSA_msg(details.privateKey);
+    if(signedTxtion.status == false) {
+        return returnVal;
+    }
     // Synchronous request examples since im throwing the wallet in its own thread ideally.
     json dataToSend;
     dataToSend["from"] = details.addrFrom;
@@ -38,7 +41,7 @@ bool Wallet::send_transaction(Wallet::TxtionDetails details) {
 Wallet::SignedTxtion Wallet::sign_ECDSA_msg(string privateKey) {
     SignedTxtion signedTxtionToReturn = SignedTxtion();
     milliseconds time_stamp_now = duration_cast< milliseconds >(system_clock::now().time_since_epoch()); //Just get the time in ms..
-    int roundedTimeStamp = (int) llround(time_stamp_now.count());
+    int roundedTimeStamp = static_cast<int>(llround(time_stamp_now.count()));
     string str_roundedTimeStamp = to_string(roundedTimeStamp);
 
     uint8_t p_signature[ECC_BYTES*2];
@@ -53,11 +56,13 @@ Wallet::SignedTxtion Wallet::sign_ECDSA_msg(string privateKey) {
         reinterpret_cast<const uint8_t*>(&str_roundedTimeStamp[0]),
         p_signature
     )){
-        signedTxtionToReturn.status = 1;
+        signedTxtionToReturn.status = true;
         signedTxtionToReturn.signature = base64_encode(p_signature, 64);
         signedTxtionToReturn.message = str_roundedTimeStamp;
+
+        cout << "Signed Transaction Successfully" << endl;
     }else {
-        signedTxtionToReturn.status = 0;
+        signedTxtionToReturn.status = false;
         cout << "Error signing transaction" << endl;
     }
     return signedTxtionToReturn;
@@ -92,12 +97,6 @@ void Wallet::generate_ECDSA_keys() {
     }else {
         cout << "Error creating keys.." << endl;
     }
-};
-
-void Wallet::listen_to_actions() {
-    thread_ptr = new thread([&]() {
-        this->walletWrapper();
-    });
 };
 
 void Wallet::walletWrapper() {
@@ -142,7 +141,11 @@ int Wallet::walletActionListener() {
             txtionDetails.addrTo = addr_to;
             txtionDetails.amount = amount;
             txtionDetails.privateKey = private_key;
-            send_transaction(txtionDetails);
+            if(send_transaction(txtionDetails)) {
+                cout << "Transaction Successfully Sent!\n";
+            } else {
+                cout << "Transaction Failed To Send\n";
+            }
         }
     }
     return 0;

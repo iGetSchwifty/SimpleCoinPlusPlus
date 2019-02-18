@@ -17,15 +17,15 @@ class BaseDataSetup {
         };
         struct BlockData {
             int proof_of_work;
-            std::vector<Transaction> transactions;
+            std::vector<BaseDataSetup::Transaction> transactions;
         };
         struct Block {
             private: 
-                std::string convertDataToJSONString(BlockData data){
+                std::string convertDataToJSONString(BaseDataSetup::BlockData data){
                     nlohmann::json j;
                     j["proof_of_work"] = data.proof_of_work;
                     j["transactions"] = nlohmann::json::array();
-                    for(int i = 0, Length = data.transactions.size(); i < Length; i++) {
+                    for(size_t i = 0, Length = data.transactions.size(); i < Length; i++) {
                         j["transactions"].push_back(nlohmann::json::object({
                             { "from", data.transactions[i].FROM },
                             { "to", data.transactions[i].TO },
@@ -47,12 +47,12 @@ class BaseDataSetup {
             public:
                 int index;
                 long long timestamp;
-                BlockData data;
+                BaseDataSetup::BlockData data;
                 std::string previous_hash;
                 std::string hash;
                 std::string data_converted_to_string;
 
-                Block(int index, long long timestamp, BlockData data, std::string previous_hash){
+                Block(int index, long long timestamp, BaseDataSetup::BlockData data, std::string previous_hash){
                     this->index = index;
                     this->timestamp = timestamp;
                     this->data = data;
@@ -64,11 +64,11 @@ class BaseDataSetup {
             std::vector<Block> Chain;
             BlockChain(Block init_block){
                 Chain.push_back(init_block);
-            };
+            }
             BlockChain(){}
             ~BlockChain(){
                 Chain.clear();
-            };
+            }
         };
         struct ProofOfWork {
             int proof;

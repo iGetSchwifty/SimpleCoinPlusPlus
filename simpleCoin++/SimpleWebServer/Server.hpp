@@ -12,27 +12,24 @@
 class Server {
     private:
         SimpleWeb::Server<SimpleWeb::HTTP> server;
-        std::thread* thread_ptr;
-        Miner* miner;
+        std::unique_ptr<std::thread*> thread_ptr;
+        std::unique_ptr<Miner*> miner;
 
     public:
         Server(): thread_ptr(nullptr) {
-            miner = new Miner();
+            miner = std::make_unique<Miner*>(new Miner());
         };
         ~Server() {
             stopMining();
-            delete miner;
-            if(thread_ptr != nullptr){
-                ShutDown();
-                delete thread_ptr;
-            }
+            shutDown();
         };
+        Server& operator= ( const Server& ) = default;
 
         void StartNode();
-        void listenForTransactions(){thread_ptr->join();};
-        void ShutDown() {thread_ptr->detach();};
+        void listenForTransactions(){(*thread_ptr)->join();};
+        void shutDown() {(*thread_ptr)->detach();};
         void mineCoins();
-        void stopMining() {miner->setMiningStatus(false);};
+        void stopMining() {(*miner)->setMiningStatus(false);};
 };
 
 #endif

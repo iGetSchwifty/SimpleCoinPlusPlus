@@ -56,14 +56,16 @@ Miner::ProofOfWork Miner::prove_the_work(long last_proof){
     milliseconds start_time = duration_cast< milliseconds >(system_clock::now().time_since_epoch()); //Just get the time in ms..
     do {
         milliseconds get_time = duration_cast< milliseconds >(system_clock::now().time_since_epoch()); //Just get the time in ms..
-        if( ((int) get_time.count() - (int) start_time.count()) % 60 == 0 ){// Check if any node found the solution
+        int timeDifference = static_cast<int>(get_time.count()) - static_cast<int>(start_time.count());
+
+        if(timeDifference % 60 == 0) {// Check if any node found the solution
             BlockChain* blockChainConsensus = consensus();
             if(blockChainConsensus != nullptr){
                 powToReturn.proof = -444;  // Honestly just returning this because i like the number
                 powToReturn.bc_obj = *blockChainConsensus;
                 doShouldExit = true;
             }
-        } else if ( ((int) get_time.count() - (int) start_time.count()) % 100 == 0 ) {
+        } else if (timeDifference % 100 == 0) {
             incrementor++;
         }
     }while ( !((incrementor % 444 == 0) && (incrementor % last_proof == 0)) && (doShouldExit == false) );
@@ -127,7 +129,7 @@ bool Miner::validateSignature(json jsonObject) {
     //  Verify if the signature is correct. This is used to prove if
     //  it's a valid request trying to do a transaction at the
     //  address. Called when a user tries to submit a new transaction.
-    string messageString = jsonObject["message"];
+    string messageString = jsonObject.at("message").get<string>();
     string data = jsonObject.at("from").get<string>();
     string signatureData = base64_decode(jsonObject.at("signature").get<string>());
 
@@ -138,7 +140,7 @@ bool Miner::validateSignature(json jsonObject) {
     if(ecdsa_verify(
         p_publicKey,
         reinterpret_cast<const uint8_t*>(&messageString[0]),
-        (const uint8_t*)signatureData.c_str()
+        reinterpret_cast<const uint8_t*>(signatureData.c_str())
     )){
         //  valid
         returnVal = true;

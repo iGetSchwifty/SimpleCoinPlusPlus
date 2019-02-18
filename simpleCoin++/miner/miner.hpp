@@ -17,12 +17,12 @@
 class Miner : public BaseDataSetup
 {
     private:
+        bool should_mine_transactions;
         std::vector<std::string> PEER_NODE_URLS;
         std::vector<Transaction> NODE_PENDING_TRANSACTIONS;
         BlockChain bc_obj;
         std::string networkName;
         std::string MINER_ADDRESS;
-        bool should_mine_transactions;
 
     public:
         //        Init the variable for mining..   Also add the first block and create a blockchain!
@@ -62,7 +62,7 @@ class Miner : public BaseDataSetup
         std::string pendingTransactionsToJSON() {
             nlohmann::json j;
             j["transactions"] = nlohmann::json::array();
-            for(int i = 0, Length = NODE_PENDING_TRANSACTIONS.size(); i < Length; i++) {
+            for(size_t i = 0, Length = NODE_PENDING_TRANSACTIONS.size(); i < Length; i++) {
                 j["transactions"].push_back(nlohmann::json::object({
                     { "from", NODE_PENDING_TRANSACTIONS[i].FROM },
                     { "to", NODE_PENDING_TRANSACTIONS[i].TO },
@@ -75,7 +75,7 @@ class Miner : public BaseDataSetup
         std::string blockChainToJSON() {
             nlohmann::json j;
             j["blocks"] = nlohmann::json::array();
-            for(int i = 0, Length = bc_obj.Chain.size(); i < Length; i++) {
+            for(size_t i = 0, Length = bc_obj.Chain.size(); i < Length; i++) {
                 Block currentParsingBlock = bc_obj.Chain[i];
                 j["blocks"].push_back(nlohmann::json::object({
                     { "data", currentParsingBlock.data_converted_to_string },
@@ -92,7 +92,7 @@ class Miner : public BaseDataSetup
             try {
                 if(jsonObj.at("blocks").size() > 0){
                     bc_local_ref = BlockChain(blockJSONToObj(jsonObj.at("blocks").front()));
-                    for(int i = 0, Length = jsonObj.at("blocks").size(); i < Length; i++) {
+                    for(size_t i = 0, Length = jsonObj.at("blocks").size(); i < Length; i++) {
                       bc_local_ref.Chain.push_back(blockJSONToObj(jsonObj.at("blocks")[i]));
                     }
                 }
@@ -109,7 +109,7 @@ class Miner : public BaseDataSetup
             std::string previous_hash = jsonObj.at("hash").get<std::string>();
             BlockData data = BlockData();
             data.proof_of_work = jsonObj.at("data").at("proof_of_work").get<int>();
-            for(int i = 0, Length = jsonObj.at("transactions").size(); i < Length; i++) {
+            for(size_t i = 0, Length = jsonObj.at("transactions").size(); i < Length; i++) {
                 data.transactions.push_back(transactionJSONToObj(jsonObj.at("transactions")[i]));
             }
             return Block(lclIndex, timestamp, data, previous_hash);
