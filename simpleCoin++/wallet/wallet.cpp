@@ -6,7 +6,6 @@
 
 using json = nlohmann::json;
 using namespace std;
-using namespace chrono;
 
 const char Wallet::hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7',
                            '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
@@ -40,9 +39,7 @@ bool Wallet::send_transaction(Wallet::TxtionDetails details) {
 
 Wallet::SignedTxtion Wallet::sign_ECDSA_msg(string privateKey) {
     SignedTxtion signedTxtionToReturn = SignedTxtion();
-    milliseconds time_stamp_now = duration_cast< milliseconds >(system_clock::now().time_since_epoch()); //Just get the time in ms..
-    int roundedTimeStamp = static_cast<int>(llround(time_stamp_now.count()));
-    string str_roundedTimeStamp = to_string(roundedTimeStamp);
+    string str_roundedTimeStamp = to_string(timeStamp());
 
     uint8_t p_signature[ECC_BYTES*2];
     uint8_t p_privateKey[ECC_BYTES];
@@ -69,7 +66,6 @@ Wallet::SignedTxtion Wallet::sign_ECDSA_msg(string privateKey) {
 };
 
 void Wallet::generate_ECDSA_keys() {
-    int privateKey[ECC_BYTES];
     string privateEncodedKey;
     string publicKey;
     uint8_t p_publicKey[ECC_BYTES+1];

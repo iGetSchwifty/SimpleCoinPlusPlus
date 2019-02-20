@@ -63,7 +63,7 @@ class Wallet {
         void generate_ECDSA_keys();
         SignedTxtion sign_ECDSA_msg(std::string privateKey);
 
-        std::string hexStr(unsigned char *data, size_t len) {
+        static std::string hexStr(unsigned char *data, size_t len) {
             std::string s(len * 2, ' ');
             for (size_t i = 0; i < len; ++i) {
                 s[2 * i]     = hexmap[(data[i] & 0xF0) >> 4];
@@ -87,6 +87,11 @@ class Wallet {
                     arrayToPopulate[i/2] = dataChunk;
                 }
             }
+        }
+        
+        static int timeStamp() {
+            std::chrono::milliseconds time_stamp_now = std::chrono::duration_cast<std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch()); //Just get the time in ms..
+            return static_cast<int>(llround(time_stamp_now.count()));
         }
 };
 
