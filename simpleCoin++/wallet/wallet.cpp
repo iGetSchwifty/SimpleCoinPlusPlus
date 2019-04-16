@@ -10,9 +10,9 @@ using namespace std;
 const char Wallet::hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7',
                            '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
-bool Wallet::send_transaction(Wallet::TxtionDetails details) {
+bool Wallet::send_transaction(TxtionDetails details) {
     bool returnVal = false;
-    Wallet::SignedTxtion signedTxtion = sign_ECDSA_msg(details.privateKey);
+    SignedTxtion signedTxtion = sign_ECDSA_msg(details.privateKey);
     if(signedTxtion.status == false) {
         return returnVal;
     }
@@ -37,24 +37,25 @@ bool Wallet::send_transaction(Wallet::TxtionDetails details) {
     return returnVal;
 };
 
-Wallet::SignedTxtion Wallet::sign_ECDSA_msg(string privateKey) {
+SignedTxtion Wallet::sign_ECDSA_msg(string privateKey) {
     SignedTxtion signedTxtionToReturn = SignedTxtion();
     string str_roundedTimeStamp = to_string(timeStamp());
 
     uint8_t p_signature[ECC_BYTES*2];
-    uint8_t p_privateKey[ECC_BYTES];
+    auto p_privateKey = stringToRawData(privateKey);
 
-    stringToRawData(privateKey, p_privateKey);
-
-    cout << "PrivateKeySign:" << endl << p_privateKey << endl << "ENDOFPrivateKeySign" << endl;
+    //
+    //  This is where things are going wrong... the transaction seems to be signing with only partial of the private key... Hmm
+    //
+    cout << "PrivateKeySign:" << endl << p_privateKey->data() << endl << "ENDOFPrivateKeySign" << endl;
 
     if(ecdsa_sign(
-        p_privateKey,
+        p_privateKey->data(),
         reinterpret_cast<const uint8_t*>(&str_roundedTimeStamp[0]),
         p_signature
     )){
         signedTxtionToReturn.status = true;
-        signedTxtionToReturn.signature = base64_encode(p_signature, 64);
+        signedTxtionToReturn.signature = base64_encode(p_signature, ECC_BYTES*2);
         signedTxtionToReturn.message = str_roundedTimeStamp;
 
         cout << "Signed Transaction Successfully" << endl;

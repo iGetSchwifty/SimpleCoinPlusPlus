@@ -16,19 +16,21 @@
 #include "../libs/json/json.hpp"
 #include "../SimpleWebServer/Helpers/client_http.hpp"
 
+struct SignedTxtion {
+    std::string signature;
+    std::string message;
+    bool status;
+};
+        
+struct TxtionDetails {
+    std::string addrFrom;
+    std::string addrTo;
+    std::string privateKey;
+    std::string amount;
+};
+
 class Wallet {
     private:
-        struct SignedTxtion {
-            std::string signature;
-            std::string message;
-            bool status;
-        };
-        struct TxtionDetails {
-            std::string addrFrom;
-            std::string addrTo;
-            std::string privateKey;
-            std::string amount;
-        };
         SimpleWeb::Client<SimpleWeb::HTTP> client;
         bool shouldListen;
         std::unique_ptr<std::thread*> thread_ptr;
@@ -72,7 +74,8 @@ class Wallet {
             return s;
         }
 
-        static void stringToRawData(std::string val, uint8_t arrayToPopulate[]) {
+        static std::unique_ptr<std::vector<uint8_t>> stringToRawData(std::string val) {
+            auto returnPointer = std::unique_ptr<std::vector<uint8_t>>(new std::vector<uint8_t>());
             for (size_t i = 0, Length = val.size(); i < Length - 1; i = i + 2) {
                 char newSub[2];
                 newSub[0] = val.substr(i,2)[0];
@@ -84,9 +87,10 @@ class Wallet {
                     uint8_t dataChunk = 0x00;
                     dataChunk = ((dataChunk & ~0xFF) | hexVal1) << 4;
                     dataChunk = dataChunk | (hexVal2 & 0x0F);
-                    arrayToPopulate[i/2] = dataChunk;
+                    returnPointer->push_back(dataChunk);
                 }
             }
+            return returnPointer;
         }
         
         static int timeStamp() {

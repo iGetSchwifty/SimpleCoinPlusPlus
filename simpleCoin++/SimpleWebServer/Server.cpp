@@ -74,9 +74,8 @@ void Server::StartNode() {
     // Note that connection timeouts will also call this handle with ec set to SimpleWeb::errc::operation_canceled
     };
 
-    HttpServer* server_thread_ref = &server;
-    thread_ptr = make_unique<thread*> (new thread([server_thread_ref]() {
+    thread_ptr = make_unique<thread*> (new thread([&]() {
         // Start server
-        server_thread_ref->start();
+        server.start();
     }));
 }
