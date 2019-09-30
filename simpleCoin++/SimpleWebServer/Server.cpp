@@ -18,7 +18,7 @@ void Server::StartNode() {
 
     // GET-example for the path /
     // Responds with request-information
-    server.resource["^/$"]["GET"] = [this](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
+    server.resource["^/$"]["GET"] = [&](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
         stringstream stream;
         stream << "<h1>{'init_block_hash':" << (*miner)->getGenesisBlock() << " }</h1>";
         response->write(stream);
@@ -27,7 +27,7 @@ void Server::StartNode() {
     //
     //  GET BLOCKS
     //
-    server.resource["^/blocks$"]["GET"] = [this](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
+    server.resource["^/blocks$"]["GET"] = [&](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
         stringstream stream;
         stream << (*miner)->blockChainToJSON();
         response->write(stream);
@@ -36,7 +36,7 @@ void Server::StartNode() {
     //
     //  GET txion
     //
-    server.resource["^/txion$"]["GET"] = [this](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
+    server.resource["^/txion$"]["GET"] = [&](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
         stringstream stream;
         stream << (*miner)->pendingTransactionsToJSON();
         response->write(stream);
@@ -45,7 +45,7 @@ void Server::StartNode() {
     //
     //  POST txtion
     //
-    server.resource["^/txion$"]["POST"] = [this](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
+    server.resource["^/txion$"]["POST"] = [&](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
         try {
             // Retrieve string:
             auto content = request->content.string();

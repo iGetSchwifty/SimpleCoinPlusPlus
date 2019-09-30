@@ -1,4 +1,4 @@
-warning_list = -fsanitize=undefined -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wsign-conversion -Wsign-promo -Wstrict-overflow=5 -Wswitch-default -Wundef -Werror -Wno-unused
+#warning_list = -fsanitize=undefined -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wsign-conversion -Wsign-promo -Wstrict-overflow=5 -Wswitch-default -Wundef -Werror -Wno-unused
 #
 #	-fsanitize=address  this is where something is going wrong (an underflow?) so want to figure it out but its getting late and need to go to bed soon.. I know there is still some memory things I need to do in order to get this project to where I want it to be
 #
@@ -21,20 +21,22 @@ warning_list = -fsanitize=undefined -pedantic -Wall -Wextra -Wcast-align -Wcast-
 #-Wformat=2
 #-Wlifetime
 
+# $(warning_list)
+
 
 all: app
 
 app: main.o sha256.o miner.o wallet.o server.o base64.o ecc.o
-	g++ -o app main.o miner.o wallet.o sha256.o server.o base64.o ecc.o -lboost_system $(warning_list)
+	g++ -o app main.o miner.o wallet.o sha256.o server.o base64.o ecc.o -lboost_system
 
 main.o: main.cpp
-	g++ -std=c++17 -c main.cpp $(warning_list)
+	g++ -std=c++17 -c main.cpp
 
 miner.o: ./simpleCoin++/miner/miner.cpp ./simpleCoin++/libs/json/json.hpp
-	g++ -std=c++17 -c ./simpleCoin++/miner/miner.cpp $(warning_list)
+	g++ -std=c++17 -c ./simpleCoin++/miner/miner.cpp
 
 wallet.o: ./simpleCoin++/wallet/wallet.cpp ./simpleCoin++/libs/json/json.hpp
-	g++ -std=c++17 -c ./simpleCoin++/wallet/wallet.cpp $(warning_list)
+	g++ -std=c++17 -c ./simpleCoin++/wallet/wallet.cpp
 
 sha256.o: ./simpleCoin++/libs/sha256/sha256.cpp ./simpleCoin++/libs/sha256/sha256.h
 	g++ -std=c++17 -c ./simpleCoin++/libs/sha256/sha256.cpp

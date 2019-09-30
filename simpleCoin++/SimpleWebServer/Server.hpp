@@ -23,7 +23,6 @@ class Server {
             stopMining();
             shutDown();
         };
-        Server& operator= ( const Server& ) = default;
 
         void StartNode();
         void listenForTransactions(){(*thread_ptr)->join();};

@@ -13,9 +13,6 @@ int main() {
     uint8_t p_publicKey[ECC_BYTES+1];
 	uint8_t p_privateKey[ECC_BYTES];
 
-    uint8_t decoded_publicKey[ECC_BYTES + 1];
-    uint8_t decoded_privateKey[ECC_BYTES];
-
     uint8_t p_signature[ECC_BYTES*2];
     string str_roundedTimeStamp = to_string(Wallet::timeStamp());
 
@@ -46,17 +43,17 @@ int main() {
         cout << "Introduce your private key" << endl;
         cin >> private_key;
 
-        Wallet::stringToRawData(private_key, decoded_privateKey);
-        Wallet::stringToRawData(addr_from, decoded_publicKey);
+        auto decoded_privateKey = Wallet::stringToRawData(private_key);
+        auto decoded_publicKey = Wallet::stringToRawData(addr_from);
 
         if(ecdsa_sign(
-            decoded_privateKey,
+            decoded_privateKey->data(),
             reinterpret_cast<const uint8_t*>(&str_roundedTimeStamp[0]),
             p_signature
         )){
             string signatureData = base64_decode(base64_encode(p_signature, 64));
             if(ecdsa_verify(
-                decoded_publicKey,
+                decoded_publicKey->data(),
                 reinterpret_cast<const uint8_t*>(&str_roundedTimeStamp[0]),
                 reinterpret_cast<const uint8_t*>(signatureData.c_str())
             )){
