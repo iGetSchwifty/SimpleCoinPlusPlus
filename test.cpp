@@ -20,6 +20,8 @@ int main() {
         p_publicKey,
         p_privateKey
     )){
+        cout << "PK:" << p_privateKey << endl;
+        
         for (auto &s : p_publicKey) {
             string hexOutput = Wallet::hexStr(&s, sizeof(s));
             publicKey.append(hexOutput);
@@ -29,9 +31,6 @@ int main() {
             string hex2 = Wallet::hexStr(&s, sizeof(s));
             privateEncodedKey.append(hex2);
         }
-
-        cout << "PrivateKey:" << endl << p_privateKey << endl << "ENDOFPrivateKey" << endl;
-        cout << "PubKey:" << endl << p_publicKey << endl << "ENDOFPUB" << endl;
 
         cout << "Wallet address / Public key: " << publicKey << endl;
         cout << "*** PRIVATE KEY DONT LOSE ***: " << privateEncodedKey << endl;
@@ -46,6 +45,7 @@ int main() {
         auto decoded_privateKey = Wallet::stringToRawData(private_key);
         auto decoded_publicKey = Wallet::stringToRawData(addr_from);
 
+        cout << "PK:" << decoded_privateKey->data() << endl;
         if(ecdsa_sign(
             decoded_privateKey->data(),
             reinterpret_cast<const uint8_t*>(&str_roundedTimeStamp[0]),

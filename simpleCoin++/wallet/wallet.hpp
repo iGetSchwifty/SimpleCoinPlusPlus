@@ -25,7 +25,7 @@ struct SignedTxtion {
 struct TxtionDetails {
     std::string addrFrom;
     std::string addrTo;
-    std::string privateKey;
+    std::string_view privateKey;
     std::string amount;
 };
 
@@ -63,7 +63,7 @@ class Wallet {
         void attachThread() {(*thread_ptr)->join();};
         bool send_transaction(TxtionDetails details);
         void generate_ECDSA_keys();
-        SignedTxtion sign_ECDSA_msg(std::string privateKey);
+        SignedTxtion sign_ECDSA_msg(std::string_view privateKey);
 
         static std::string hexStr(unsigned char *data, size_t len) {
             std::string s(len * 2, ' ');
@@ -74,8 +74,8 @@ class Wallet {
             return s;
         }
 
-        static std::unique_ptr<std::vector<uint8_t>> stringToRawData(std::string val) {
-            auto returnPointer = std::unique_ptr<std::vector<uint8_t>>(new std::vector<uint8_t>());
+        static std::shared_ptr<std::vector<uint8_t>> stringToRawData(std::string_view val) {
+            auto returnPointer = std::shared_ptr<std::vector<uint8_t>>(new std::vector<uint8_t>());
             for (size_t i = 0, Length = val.size(); i < Length - 1; i = i + 2) {
                 char newSub[2];
                 newSub[0] = val.substr(i,2)[0];

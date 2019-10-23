@@ -13,11 +13,11 @@ class Server {
     private:
         SimpleWeb::Server<SimpleWeb::HTTP> server;
         std::unique_ptr<std::thread*> thread_ptr;
-        std::unique_ptr<Miner*> miner;
+        std::shared_ptr<Miner*> miner;
 
     public:
         Server(): thread_ptr(nullptr) {
-            miner = std::make_unique<Miner*>(new Miner());
+            miner = std::make_shared<Miner*>(new Miner());
         };
         ~Server() {
             stopMining();

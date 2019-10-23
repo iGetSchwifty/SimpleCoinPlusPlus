@@ -37,17 +37,13 @@ bool Wallet::send_transaction(TxtionDetails details) {
     return returnVal;
 };
 
-SignedTxtion Wallet::sign_ECDSA_msg(string privateKey) {
-    SignedTxtion signedTxtionToReturn = SignedTxtion();
+SignedTxtion Wallet::sign_ECDSA_msg(string_view privateKey) {
+    SignedTxtion signedTxtionToReturn {};
     string str_roundedTimeStamp = to_string(timeStamp());
 
-    uint8_t p_signature[ECC_BYTES*2];
+    uint8_t p_signature[ECC_BYTES*2] {0};
+    
     auto p_privateKey = stringToRawData(privateKey);
-
-    //
-    //  This is where things are going wrong... the transaction seems to be signing with only partial of the private key... Hmm
-    //
-    cout << "PrivateKeySign:" << endl << p_privateKey->data() << endl << "ENDOFPrivateKeySign" << endl;
 
     if(ecdsa_sign(
         p_privateKey->data(),
@@ -55,10 +51,10 @@ SignedTxtion Wallet::sign_ECDSA_msg(string privateKey) {
         p_signature
     )){
         signedTxtionToReturn.status = true;
-        signedTxtionToReturn.signature = base64_encode(p_signature, ECC_BYTES*2);
+        signedTxtionToReturn.signature = base64_encode(p_signature, 64);
         signedTxtionToReturn.message = str_roundedTimeStamp;
 
-        cout << "Signed Transaction Successfully" << endl;
+        cout << "Signed Transaction Successfully\n" << endl;
     }else {
         signedTxtionToReturn.status = false;
         cout << "Error signing transaction" << endl;
@@ -69,8 +65,8 @@ SignedTxtion Wallet::sign_ECDSA_msg(string privateKey) {
 void Wallet::generate_ECDSA_keys() {
     string privateEncodedKey;
     string publicKey;
-    uint8_t p_publicKey[ECC_BYTES+1];
-	uint8_t p_privateKey[ECC_BYTES];
+    uint8_t p_publicKey[ECC_BYTES+1]{0};
+	uint8_t p_privateKey[ECC_BYTES]{0};
 
     if(ecc_make_key(
         p_publicKey,
@@ -85,9 +81,6 @@ void Wallet::generate_ECDSA_keys() {
             string hex2 = hexStr(&s, sizeof(s));
             privateEncodedKey.append(hex2);
         }
-
-        cout << "PrivateKey:" << endl << p_privateKey << endl << "ENDOFPrivateKey" << endl;
-        cout << "PubKey:" << endl << p_publicKey << endl << "ENDOFPUB" << endl;
 
         cout << "Wallet address / Public key: " << publicKey << endl;
         cout << "*** PRIVATE KEY DONT LOSE ***: " << privateEncodedKey << endl;

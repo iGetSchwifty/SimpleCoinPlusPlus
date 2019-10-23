@@ -134,7 +134,7 @@ bool Miner::validateSignature(json jsonObject) {
     string signatureData = base64_decode(jsonObject.at("signature").get<string>());
 
     auto p_publicKey = Wallet::stringToRawData(data);
-
+    cout << jsonObject << endl;
     cout << "PubKey" << endl << p_publicKey->data() << endl << "ENDOFPUB" << endl;
     if(ecdsa_verify(
         p_publicKey->data(),
