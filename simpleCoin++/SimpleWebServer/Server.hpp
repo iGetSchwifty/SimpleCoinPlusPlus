@@ -10,10 +10,9 @@
 #include <boost/filesystem.hpp>
 
 class Server {
-    private:
-        SimpleWeb::Server<SimpleWeb::HTTP> server;
-        std::unique_ptr<std::thread*> thread_ptr;
-        std::shared_ptr<Miner*> miner;
+    SimpleWeb::Server<SimpleWeb::HTTP> server;
+    std::unique_ptr<std::thread*> thread_ptr;
+    std::shared_ptr<Miner*> miner;
 
     public:
         Server(): thread_ptr(nullptr) {

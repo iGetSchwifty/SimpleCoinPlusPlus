@@ -30,25 +30,24 @@ struct TxtionDetails {
 };
 
 class Wallet {
-    private:
-        SimpleWeb::Client<SimpleWeb::HTTP> client;
-        bool shouldListen;
-        std::unique_ptr<std::thread*> thread_ptr;
-        const static char hexmap[];
+    SimpleWeb::Client<SimpleWeb::HTTP> client;
+    bool shouldListen;
+    std::unique_ptr<std::thread*> thread_ptr;
+    const static char hexmap[];
 
-        int walletActionListener();
-        void walletWrapper();
+    int walletActionListener();
+    void walletWrapper();
 
-        static int valueFromHexChar (const char *c) { 
-            int returnVal = -1;
-            for(int i = 0; i < 16; ++i) {
-                if(hexmap[i] == *c) {
-                    returnVal = i;
-                    break;
-                }
+    [[nodiscard]] static int valueFromHexChar (const char *c) noexcept { 
+        int returnVal = -1;
+        for(int i = 0; i < 16; ++i) {
+            if(hexmap[i] == *c) {
+                returnVal = i;
+                break;
             }
-            return returnVal;
         }
+        return returnVal;
+    }
 
     public:
         Wallet(): client("localhost:3000"), shouldListen(true), thread_ptr(std::make_unique<std::thread*>(new std::thread([this]() {

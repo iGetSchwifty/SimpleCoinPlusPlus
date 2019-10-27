@@ -14,15 +14,13 @@
 #include "../SimpleWebServer/Helpers/client_http.hpp"
 #include "baseData.hpp"
 
-class Miner : public BaseDataSetup
-{
-    private:
-        bool should_mine_transactions;
-        std::vector<std::string> PEER_NODE_URLS;
-        std::vector<Transaction> NODE_PENDING_TRANSACTIONS;
-        BlockChain bc_obj;
-        std::string networkName;
-        std::string MINER_ADDRESS;
+class Miner : public BaseDataSetup {
+    bool should_mine_transactions;
+    std::vector<std::string> PEER_NODE_URLS;
+    std::vector<Transaction> NODE_PENDING_TRANSACTIONS;
+    std::string networkName;
+    std::string MINER_ADDRESS;
+    BlockChain bc_obj;
 
     public:
         //        Init the variable for mining..   Also add the first block and create a blockchain!
@@ -41,7 +39,7 @@ class Miner : public BaseDataSetup
         BlockChain* consensus();
         ProofOfWork prove_the_work(long last_proof);
         int mine();
-        bool validateSignature(nlohmann::json jsonObject);
+        [[nodiscard]] static bool validateSignature(nlohmann::json jsonObject) noexcept;
         void appendTransactionToQueue(Transaction transactionToBeProcessed) {
             NODE_PENDING_TRANSACTIONS.push_back(transactionToBeProcessed);
         }

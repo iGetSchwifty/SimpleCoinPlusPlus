@@ -97,7 +97,7 @@ int Miner::mine() {
 
         // Then we add the mining reward
         Transaction miningReward = Transaction();
-        miningReward.amount = 1;
+        miningReward.amount = 50;
         miningReward.FROM = networkName;
         miningReward.TO = MINER_ADDRESS;
 
@@ -117,14 +117,14 @@ int Miner::mine() {
         this->bc_obj.Chain.push_back(newBlock);
 
         // Let the client know this node mined a block
-        //cout << "You mined a block - " << "Index: " << newBlock.index << ", Timestamp: " << newBlock.timestamp
-        //     << ", Data: " << newBlock.data_converted_to_string << ", Hash: " << newBlock.previous_hash << endl << endl;
-        //cout.flush();
+        cout << "You mined a block - " << "Index: " << newBlock.index << ", Timestamp: " << newBlock.timestamp
+            << ", Data: " << newBlock.data_converted_to_string << ", Hash: " << newBlock.previous_hash << endl << endl;
+        cout.flush();
     }
     return 0;
 }
 
-bool Miner::validateSignature(json jsonObject) {
+bool Miner::validateSignature(json jsonObject) noexcept {
     bool returnVal = false;
     //  Verify if the signature is correct. This is used to prove if
     //  it's a valid request trying to do a transaction at the
