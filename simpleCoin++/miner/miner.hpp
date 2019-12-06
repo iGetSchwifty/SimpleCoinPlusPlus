@@ -14,7 +14,9 @@
 #include "../SimpleWebServer/Helpers/client_http.hpp"
 #include "baseData.hpp"
 
-class Miner : public BaseDataSetup {
+using namespace BaseDataSetup;
+
+class Miner {
     bool should_mine_transactions;
     std::vector<std::string> PEER_NODE_URLS;
     std::vector<Transaction> NODE_PENDING_TRANSACTIONS;

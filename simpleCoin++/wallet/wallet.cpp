@@ -5,14 +5,14 @@
 #include "../libs/easy-ecc/ecc.h"
 
 using json = nlohmann::json;
-using namespace std;
 
 const char Wallet::hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7',
                            '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
-bool Wallet::send_transaction(TxtionDetails details) {
+bool Wallet::send_transaction(BaseDataSetup::TxtionDetails details) {
+    using namespace std;
     bool returnVal = false;
-    SignedTxtion signedTxtion = sign_ECDSA_msg(details.privateKey);
+    BaseDataSetup::SignedTxtion signedTxtion = sign_ECDSA_msg(details.privateKey);
     if(signedTxtion.status == false) {
         return returnVal;
     }
@@ -37,8 +37,9 @@ bool Wallet::send_transaction(TxtionDetails details) {
     return returnVal;
 };
 
-SignedTxtion Wallet::sign_ECDSA_msg(string_view privateKey) {
-    SignedTxtion signedTxtionToReturn {};
+BaseDataSetup::SignedTxtion Wallet::sign_ECDSA_msg(std::string_view privateKey) {
+    using namespace std;
+    BaseDataSetup::SignedTxtion signedTxtionToReturn {};
     string str_roundedTimeStamp = to_string(timeStamp());
 
     uint8_t p_signature[ECC_BYTES*2] {0};
@@ -63,6 +64,7 @@ SignedTxtion Wallet::sign_ECDSA_msg(string_view privateKey) {
 };
 
 void Wallet::generate_ECDSA_keys() {
+    using namespace std;
     string privateEncodedKey;
     string publicKey;
     uint8_t p_publicKey[ECC_BYTES+1]{0};
@@ -97,6 +99,7 @@ void Wallet::walletWrapper() {
 };
 
 int Wallet::walletActionListener() {
+    using namespace std;
     string Input;
     cin >> Input;
 
@@ -126,7 +129,7 @@ int Wallet::walletActionListener() {
         cin >> Input;
 
         if(Input == "y" || Input == "Y") {
-            TxtionDetails txtionDetails = TxtionDetails();
+            BaseDataSetup::TxtionDetails txtionDetails {};
             txtionDetails.addrFrom = addr_from;
             txtionDetails.addrTo = addr_to;
             txtionDetails.amount = amount;

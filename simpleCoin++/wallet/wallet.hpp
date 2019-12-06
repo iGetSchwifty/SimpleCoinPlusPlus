@@ -15,19 +15,7 @@
 #include "../libs/sha256/sha256.h"
 #include "../libs/json/json.hpp"
 #include "../SimpleWebServer/Helpers/client_http.hpp"
-
-struct SignedTxtion {
-    std::string signature;
-    std::string message;
-    bool status;
-};
-        
-struct TxtionDetails {
-    std::string addrFrom;
-    std::string addrTo;
-    std::string_view privateKey;
-    std::string amount;
-};
+#include "../miner/baseData.hpp"
 
 class Wallet {
     SimpleWeb::Client<SimpleWeb::HTTP> client;
@@ -60,9 +48,9 @@ class Wallet {
         };
 
         void attachThread() {(*thread_ptr)->join();};
-        bool send_transaction(TxtionDetails details);
+        bool send_transaction(BaseDataSetup::TxtionDetails details);
         void generate_ECDSA_keys();
-        SignedTxtion sign_ECDSA_msg(std::string_view privateKey);
+        BaseDataSetup::SignedTxtion sign_ECDSA_msg(std::string_view privateKey);
 
         static std::string hexStr(unsigned char *data, size_t len) {
             std::string s(len * 2, ' ');

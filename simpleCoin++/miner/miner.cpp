@@ -7,16 +7,16 @@ using HttpClient = SimpleWeb::Client<SimpleWeb::HTTP>;
 using namespace std;
 using namespace chrono;
 
-Miner::Block Miner::create_genesis_block(){
+Block Miner::create_genesis_block(){
     milliseconds ms = duration_cast< milliseconds >(system_clock::now().time_since_epoch()); //Just get the time in ms..
     BlockData dataToInit;
     dataToInit.proof_of_work = 9;
     dataToInit.transactions = vector<Transaction>(); //EMPTY TRANSACTIONS
-    return Miner::Block(0, ms.count(), dataToInit, "0");
+    return Block(0, ms.count(), dataToInit, "0");
 }
 
-vector<Miner::BlockChain> Miner::find_new_chains(){
-    vector<Miner::BlockChain> blockChainsToReturn = vector<Miner::BlockChain>();
+vector<BlockChain> Miner::find_new_chains(){
+    vector<BlockChain> blockChainsToReturn = vector<BlockChain>();
     // Synchronous request
     try {
         for(string &node_url : PEER_NODE_URLS){
@@ -37,9 +37,9 @@ vector<Miner::BlockChain> Miner::find_new_chains(){
 
 // should return nullptr if we should keep searching for proof
 // else it will contain the longest blockchain we need to Give up searching for proof, update chain and start over
-Miner::BlockChain* Miner::consensus(){
-    Miner::BlockChain* blockChainToReturn = nullptr;
-    vector<Miner::BlockChain> otherBlockchains = find_new_chains();
+BlockChain* Miner::consensus(){
+    BlockChain* blockChainToReturn = nullptr;
+    vector<BlockChain> otherBlockchains = find_new_chains();
     for (auto &other_bc : otherBlockchains) {  
         if (other_bc.Chain.size() < bc_obj.Chain.size())
         {
@@ -49,7 +49,7 @@ Miner::BlockChain* Miner::consensus(){
     return blockChainToReturn;
 }
 
-Miner::ProofOfWork Miner::prove_the_work(long last_proof){
+ProofOfWork Miner::prove_the_work(long last_proof){
     ProofOfWork powToReturn = ProofOfWork();
     long incrementor = last_proof + 1;
     bool doShouldExit = false;
@@ -117,9 +117,9 @@ int Miner::mine() {
         this->bc_obj.Chain.push_back(newBlock);
 
         // Let the client know this node mined a block
-        cout << "You mined a block - " << "Index: " << newBlock.index << ", Timestamp: " << newBlock.timestamp
-            << ", Data: " << newBlock.data_converted_to_string << ", Hash: " << newBlock.previous_hash << endl << endl;
-        cout.flush();
+        // cout << "You mined a block - " << "Index: " << newBlock.index << ", Timestamp: " << newBlock.timestamp
+        //     << ", Data: " << newBlock.data_converted_to_string << ", Hash: " << newBlock.previous_hash << endl << endl;
+        // cout.flush();
     }
     return 0;
 }

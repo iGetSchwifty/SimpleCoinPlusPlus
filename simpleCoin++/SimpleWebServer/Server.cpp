@@ -12,14 +12,10 @@ void Server::mineCoins() {
 }
 
 void Server::StartNode() {
-    std::weak_ptr<Miner*> weak_obj(miner);
     server.config.port = 3000;
     (*miner)->setMiningStatus(true);
 
-    server.resource["^/$"]["GET"] = [weak_obj](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
-        auto miner = weak_obj.lock();
-        if(!miner) { return; }
-
+    server.resource["^/$"]["GET"] = [this](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
         stringstream stream;
         stream << "<h1>{'init_block_hash':" << (*miner)->getGenesisBlock() << " }</h1>";
         response->write(stream);
@@ -28,10 +24,7 @@ void Server::StartNode() {
     //
     //  GET BLOCKS
     //
-    server.resource["^/blocks$"]["GET"] = [weak_obj](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
-        auto miner = weak_obj.lock();
-        if(!miner) { return; }
-
+    server.resource["^/blocks$"]["GET"] = [this](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
         stringstream stream;
         stream << (*miner)->blockChainToJSON();
         response->write(stream);
@@ -40,10 +33,7 @@ void Server::StartNode() {
     //
     //  GET txion
     //
-    server.resource["^/txion$"]["GET"] = [weak_obj](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
-        auto miner = weak_obj.lock();
-        if(!miner) { return; }
-
+    server.resource["^/txion$"]["GET"] = [this](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
         stringstream stream;
         stream << (*miner)->pendingTransactionsToJSON();
         response->write(stream);
@@ -52,17 +42,14 @@ void Server::StartNode() {
     //
     //  POST txtion
     //
-    server.resource["^/txion$"]["POST"] = [weak_obj](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
-        auto miner = weak_obj.lock();
-        if(!miner) { return; }
-
+    server.resource["^/txion$"]["POST"] = [this](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
         try {
             // Retrieve string:
             auto content = request->content.string();
             auto jsonObject = json::parse(content.c_str());
             // {"from": addr_from, "to": addr_to, "amount": amount, "signature": signature, "message": message}
             if((*miner)->validateSignature(jsonObject)){
-                Miner::Transaction txion = Miner::Transaction();
+                Transaction txion {};
                 string toReturnVal = "New transaction - FROM: ";
                 txion.FROM = jsonObject.at("from").get<string>();
                 txion.TO = jsonObject.at("to").get<string>();
