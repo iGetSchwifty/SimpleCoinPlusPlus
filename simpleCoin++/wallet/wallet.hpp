@@ -14,13 +14,12 @@
 
 #include "../libs/sha256/sha256.h"
 #include "../libs/json/json.hpp"
-#include "../SimpleWebServer/Helpers/client_http.hpp"
 #include "../miner/baseData.hpp"
+#include <thread>
 
 class Wallet {
-    SimpleWeb::Client<SimpleWeb::HTTP> client;
     bool shouldListen;
-    std::unique_ptr<std::thread*> thread_ptr;
+    std::thread* thread_ptr;
     const static char hexmap[];
 
     int walletActionListener();
@@ -38,16 +37,16 @@ class Wallet {
     }
 
     public:
-        Wallet(): client("localhost:3000"), shouldListen(true), thread_ptr(std::make_unique<std::thread*>(new std::thread([this]() {
+        Wallet(): shouldListen(true), thread_ptr(new std::thread([this]() {
             this->walletWrapper();
-        }))) {};
+        })) {};
 
         ~Wallet(){
             shouldListen = false;
-            (*thread_ptr)->detach();
+            thread_ptr->detach();
         };
 
-        void attachThread() {(*thread_ptr)->join();};
+        void attachThread() { thread_ptr->join(); };
         bool send_transaction(BaseDataSetup::TxtionDetails details);
         void generate_ECDSA_keys();
         BaseDataSetup::SignedTxtion sign_ECDSA_msg(std::string_view privateKey);

@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <fstream>
 #include <vector>
-#include <boost/filesystem.hpp>
 
 class Server {
     SimpleWeb::Server<SimpleWeb::HTTP> server;

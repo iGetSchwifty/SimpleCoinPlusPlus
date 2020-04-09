@@ -24,15 +24,16 @@ bool Wallet::send_transaction(BaseDataSetup::TxtionDetails details) {
     dataToSend["signature"] = signedTxtion.signature;
     dataToSend["message"] = signedTxtion.message;
 
-    try {
-        auto req = client.request("POST", "/txion", dataToSend.dump());
-        cout << endl << req->content.rdbuf() << endl;
-        returnVal = true;
-    }
-    catch(const SimpleWeb::system_error &e) {
-        cout << endl << "Client request error: " << e.what() << endl;
-        cout.flush();
-    }
+    cout << "JEFFREY FIX THIS SHIzzz";
+    // try {
+    //     auto req = client.request("POST", "/txion", dataToSend.dump());
+    //     cout << endl << req->content.rdbuf() << endl;
+    //     returnVal = true;
+    // }
+    // catch(const SimpleWeb::system_error &e) {
+    //     cout << endl << "Client request error: " << e.what() << endl;
+    //     cout.flush();
+    // }
 
     return returnVal;
 };
