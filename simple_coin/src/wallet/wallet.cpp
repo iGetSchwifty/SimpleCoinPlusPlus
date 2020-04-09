@@ -129,8 +129,8 @@ int Wallet::walletActionListener() {
             // txtionDetails.addrTo = addr_to;
             // txtionDetails.amount = amount;
             // txtionDetails.privateKey = private_key;
-           //if(send_transaction(txtionDetails)) {
-             //   cout << "Transaction Successfully Sent!\n";
+            //if(send_transaction(txtionDetails)) {
+            //   cout << "Transaction Successfully Sent!\n";
             //} else {
                 cout << "Transaction Failed To Send\n";
             //}

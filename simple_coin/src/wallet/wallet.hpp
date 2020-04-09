@@ -10,7 +10,7 @@
 #include <math.h>
 #include <algorithm>
 #include <stdexcept>
-//#include "../miner/baseData.hpp"
+#include <util/data/base>
 
 class Wallet {
     bool shouldListen;

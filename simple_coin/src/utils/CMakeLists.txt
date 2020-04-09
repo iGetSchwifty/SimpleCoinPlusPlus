@@ -1,0 +1,1 @@
+add_library(utils OBJECT data/base.hpp)
