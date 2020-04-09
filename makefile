@@ -1,4 +1,4 @@
-warning_list =  -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wsign-conversion -Wsign-promo -Wstrict-overflow=5 -Wswitch-default -Wundef -Werror -Wno-unused
+warning_list = -fsanitize=undefined -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wsign-conversion -Wsign-promo -Wstrict-overflow=5 -Wswitch-default -Wundef -Werror -Wno-unused
 #
 #	-fsanitize=address  this is where something is going wrong (an underflow?) so want to figure it out but its getting late and need to go to bed soon.. I know there is still some memory things I need to do in order to get this project to where I want it to be
 #
@@ -25,29 +25,29 @@ warning_list =  -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-pri
 
 all: app
 
-app: main.o sha256.o miner.o wallet.o base64.o ecc.o
-	clang++ -o app main.o miner.o wallet.o sha256.o base64.o ecc.o
+app: main.o wallet.o
+	clang++ -o app main.o wallet.o
 
 main.o: main.cpp
 	clang++ -std=c++2a -c main.cpp $(warning_list)
 
-miner.o: ./simpleCoin++/miner/miner.cpp ./simpleCoin++/libs/json/json.hpp
-	clang++ -std=c++2a -c ./simpleCoin++/miner/miner.cpp
+#miner.o: ./simpleCoin++/miner/miner.cpp ./simpleCoin++/libs/json/json.hpp
+#	clang++ -std=c++2a -c ./simpleCoin++/miner/miner.cpp
 
 wallet.o: ./simpleCoin++/wallet/wallet.cpp ./simpleCoin++/libs/json/json.hpp
 	clang++ -std=c++2a -c ./simpleCoin++/wallet/wallet.cpp
 
-sha256.o: ./simpleCoin++/libs/sha256/sha256.cpp ./simpleCoin++/libs/sha256/sha256.h
-	clang++ -std=c++2a -c ./simpleCoin++/libs/sha256/sha256.cpp
+#sha256.o: ./simpleCoin++/libs/sha256/sha256.cpp ./simpleCoin++/libs/sha256/sha256.h
+#	clang++ -std=c++2a -c ./simpleCoin++/libs/sha256/sha256.cpp
 
 #server.o: ./simpleCoin++/SimpleWebServer/Server.cpp ./simpleCoin++/SimpleWebServer/Server.hpp
 #	clang++ -std=c++2a -c ./simpleCoin++/SimpleWebServer/Server.cpp
 
-base64.o: ./simpleCoin++/libs/base64/base64.cpp ./simpleCoin++/libs/base64/base64.h
-	clang++ -std=c++2a -c ./simpleCoin++/libs/base64/base64.cpp
+#base64.o: ./simpleCoin++/libs/base64/base64.cpp ./simpleCoin++/libs/base64/base64.h
+#	clang++ -std=c++2a -c ./simpleCoin++/libs/base64/base64.cpp
 
-ecc.o: ./simpleCoin++/libs/easy-ecc/ecc.c ./simpleCoin++/libs/easy-ecc/ecc.h
-	clang -c ./simpleCoin++/libs/easy-ecc/ecc.c
+#ecc.o: ./simpleCoin++/libs/easy-ecc/ecc.c ./simpleCoin++/libs/easy-ecc/ecc.h
+#	clang -c ./simpleCoin++/libs/easy-ecc/ecc.c
 
 #	Remove Test Stuff
 #	Once you figure out the lifecyle stuff since you can create a valid transaction within the test and not the app
