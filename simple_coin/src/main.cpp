@@ -3,6 +3,6 @@
 
 int main() {
   Wallet wallet;
-  //wallet.attachThread();
+  wallet.attachThread();
   return 0;
 }

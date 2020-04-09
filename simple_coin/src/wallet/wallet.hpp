@@ -10,7 +10,7 @@
 #include <math.h>
 #include <algorithm>
 #include <stdexcept>
-#include <util/data/base>
+#include "../utils/data/base.hpp" // TODO: FIX THIS INCLUDE
 
 class Wallet {
     bool shouldListen;
