@@ -4,16 +4,16 @@ using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
 
 void Server::run() {
     int result = 0;
+    (*miner)->setMiningStatus(true);
     do {
         result = (*miner)->mine();
-    }while((*miner)->shouldMiningOccur() || result != 0);
+    } while((*miner)->shouldMiningOccur() || result != 0);
 }
 
-void Server::StartNode() {
+void Server::startNode() {
     server.config.port = 3000;
-    (*miner)->setMiningStatus(true);
-
-    server.resource["^/$"]["GET"] = [this](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
+    
+    server.resource["^/$"]["GET"] = [&](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
         std::stringstream stream;
         stream << "<h1>{'init_block_hash':" << (*miner)->getGenesisBlock() << " }</h1>";
         response->write(stream);
@@ -22,7 +22,7 @@ void Server::StartNode() {
     //
     //  GET BLOCKS
     //
-    server.resource["^/blocks$"]["GET"] = [this](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
+    server.resource["^/blocks$"]["GET"] = [&](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
         std::stringstream stream;
         stream << (*miner)->blockChainToJSON();
         response->write(stream);
@@ -31,7 +31,7 @@ void Server::StartNode() {
     //
     //  GET txion
     //
-    server.resource["^/txion$"]["GET"] = [this](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
+    server.resource["^/txion$"]["GET"] = [&](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
         std::stringstream stream;
         stream << (*miner)->pendingTransactionsToJSON();
         response->write(stream);
@@ -40,7 +40,7 @@ void Server::StartNode() {
     //
     //  POST txtion
     //
-    server.resource["^/txion$"]["POST"] = [this](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
+    server.resource["^/txion$"]["POST"] = [&](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
         try {
             // Retrieve string:
             auto content = request->content.string();
@@ -69,8 +69,5 @@ void Server::StartNode() {
     // Note that connection timeouts will also call this handle with ec set to SimpleWeb::errc::operation_canceled
     };
 
-    // thread_ptr = std::make_unique<thread*> (new thread([&]() {
-    //     // Start server
-    //     server.start();
-    // }));
+    server.start();
 }

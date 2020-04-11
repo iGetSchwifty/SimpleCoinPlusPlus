@@ -132,8 +132,6 @@ bool Miner::validateSignature(json jsonObject) noexcept {
     string signatureData = base64_decode(jsonObject.at("signature").get<string>());
 
     auto p_publicKey = BaseDataSetup::stringToRawData(data);
-    cout << jsonObject << endl;
-    cout << "PubKey" << endl << p_publicKey->data() << endl << "ENDOFPUB" << endl;
     if(ecdsa_verify(
         p_publicKey->data(),
         reinterpret_cast<const uint8_t*>(&messageString[0]),
