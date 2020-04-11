@@ -1,6 +1,4 @@
 #include "./miner.hpp"
-#include "../libs/base64/base64.h"
-#include "../wallet/wallet.hpp"
 
 using json = nlohmann::json;
 using HttpClient = SimpleWeb::Client<SimpleWeb::HTTP>;
@@ -133,7 +131,7 @@ bool Miner::validateSignature(json jsonObject) noexcept {
     string data = jsonObject.at("from").get<string>();
     string signatureData = base64_decode(jsonObject.at("signature").get<string>());
 
-    auto p_publicKey = Wallet::stringToRawData(data);
+    auto p_publicKey = BaseDataSetup::stringToRawData(data);
     cout << jsonObject << endl;
     cout << "PubKey" << endl << p_publicKey->data() << endl << "ENDOFPUB" << endl;
     if(ecdsa_verify(

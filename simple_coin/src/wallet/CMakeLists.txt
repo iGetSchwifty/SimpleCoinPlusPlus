@@ -10,5 +10,6 @@ target_include_directories(wallet
         "${CMAKE_SOURCE_DIR}/src/utils/data"
         "${CMAKE_SOURCE_DIR}/src/utils/easy-ecc"
         "${CMAKE_SOURCE_DIR}/src/utils/json"
+        "${CMAKE_SOURCE_DIR}/src/utils/server-helpers"
         "${CMAKE_SOURCE_DIR}/src/utils/sha256"
 )

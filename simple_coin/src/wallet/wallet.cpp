@@ -1,7 +1,5 @@
 #include "wallet.hpp"
 
-char Wallet::hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-
 bool Wallet::send_transaction(BaseDataSetup::TxtionDetails details) {
     using namespace std;
     using namespace nlohmann;
@@ -18,16 +16,15 @@ bool Wallet::send_transaction(BaseDataSetup::TxtionDetails details) {
     dataToSend["signature"] = signedTxtion.signature;
     dataToSend["message"] = signedTxtion.message;
 
-    cout << "JEFFREY FIX THIS SHIzzz";
-    // try {
-    //     auto req = client.request("POST", "/txion", dataToSend.dump());
-    //     cout << endl << req->content.rdbuf() << endl;
-    //     returnVal = true;
-    // }
-    // catch(const SimpleWeb::system_error &e) {
-    //     cout << endl << "Client request error: " << e.what() << endl;
-    //     cout.flush();
-    // }
+    try {
+        auto req = client.request("POST", "/txion", dataToSend.dump());
+        cout << endl << req->content.rdbuf() << endl;
+        returnVal = true;
+    }
+    catch(const SimpleWeb::system_error &e) {
+        cout << endl << "Client request error: " << e.what() << endl;
+        cout.flush();
+    }
 
     return returnVal;
 };
@@ -35,11 +32,11 @@ bool Wallet::send_transaction(BaseDataSetup::TxtionDetails details) {
 BaseDataSetup::SignedTxtion Wallet::sign_ECDSA_msg(std::string_view privateKey) {
     using namespace std;
     BaseDataSetup::SignedTxtion signedTxtionToReturn {};
-    string str_roundedTimeStamp = to_string(timeStamp());
+    string str_roundedTimeStamp = to_string(BaseDataSetup::timeStamp());
 
     uint8_t p_signature[ECC_BYTES*2] {0};
     
-    auto p_privateKey = stringToRawData(privateKey);
+    auto p_privateKey = BaseDataSetup::stringToRawData(privateKey);
 
     if(ecdsa_sign(
         p_privateKey->data(),
@@ -70,12 +67,12 @@ void Wallet::generate_ECDSA_keys() {
         p_privateKey
     )){
         for (auto &s : p_publicKey) {
-            string hexOutput = hexStr(&s, sizeof(s));
+            string hexOutput = BaseDataSetup::hexStr(&s, sizeof(s));
             publicKey.append(hexOutput);
         }
 
         for (auto &s : p_privateKey) {
-            string hex2 = hexStr(&s, sizeof(s));
+            string hex2 = BaseDataSetup::hexStr(&s, sizeof(s));
             privateEncodedKey.append(hex2);
         }
 
@@ -129,11 +126,11 @@ int Wallet::walletActionListener() {
             txtionDetails.addrTo = addr_to;
             txtionDetails.amount = amount;
             txtionDetails.privateKey = private_key;
-            //if(send_transaction(txtionDetails)) {
-            //   cout << "Transaction Successfully Sent!\n";
-            //} else {
+            if(send_transaction(txtionDetails)) {
+              cout << "Transaction Successfully Sent!\n";
+            } else {
                 cout << "Transaction Failed To Send\n";
-            //}
+            }
         }
     }
     return 0;

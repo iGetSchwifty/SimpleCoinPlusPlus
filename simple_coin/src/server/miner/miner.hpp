@@ -8,11 +8,12 @@
 #include <iostream>
 #include <chrono>
 
-#include "../libs/sha256/sha256.h"
-#include "../libs/json/json.hpp"
-#include "../libs/easy-ecc/ecc.h"
-#include "../SimpleWebServer/Helpers/client_http.hpp"
-#include "baseData.hpp"
+#include <sha256.h>
+#include <json.hpp>
+#include <ecc.h>
+#include <client_http.hpp>
+#include <base.hpp>
+#include <base64.h>
 
 using namespace BaseDataSetup;
 

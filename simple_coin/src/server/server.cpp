@@ -1,8 +1,6 @@
 #include "server.hpp"
 
-// using namespace std;
-// using json = nlohmann::json;
-// using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
+using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
 
 void Server::run() {
     int result = 0;
@@ -15,8 +13,8 @@ void Server::StartNode() {
     server.config.port = 3000;
     (*miner)->setMiningStatus(true);
 
-    server.resource["^/$"]["GET"] = [this](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
-        stringstream stream;
+    server.resource["^/$"]["GET"] = [this](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
+        std::stringstream stream;
         stream << "<h1>{'init_block_hash':" << (*miner)->getGenesisBlock() << " }</h1>";
         response->write(stream);
     };
@@ -24,8 +22,8 @@ void Server::StartNode() {
     //
     //  GET BLOCKS
     //
-    server.resource["^/blocks$"]["GET"] = [this](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
-        stringstream stream;
+    server.resource["^/blocks$"]["GET"] = [this](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
+        std::stringstream stream;
         stream << (*miner)->blockChainToJSON();
         response->write(stream);
     };
@@ -33,8 +31,8 @@ void Server::StartNode() {
     //
     //  GET txion
     //
-    server.resource["^/txion$"]["GET"] = [this](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
-        stringstream stream;
+    server.resource["^/txion$"]["GET"] = [this](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
+        std::stringstream stream;
         stream << (*miner)->pendingTransactionsToJSON();
         response->write(stream);
     };
@@ -42,37 +40,37 @@ void Server::StartNode() {
     //
     //  POST txtion
     //
-    server.resource["^/txion$"]["POST"] = [this](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
+    server.resource["^/txion$"]["POST"] = [this](std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request) {
         try {
             // Retrieve string:
             auto content = request->content.string();
-            auto jsonObject = json::parse(content.c_str());
+            auto jsonObject = nlohmann::json::parse(content.c_str());
             // {"from": addr_from, "to": addr_to, "amount": amount, "signature": signature, "message": message}
             if((*miner)->validateSignature(jsonObject)){
                 Transaction txion {};
-                string toReturnVal = "New transaction - FROM: ";
-                txion.FROM = jsonObject.at("from").get<string>();
-                txion.TO = jsonObject.at("to").get<string>();
-                txion.amount = stoi(jsonObject.at("amount").get<string>());
+                std::string toReturnVal = "New transaction - FROM: ";
+                txion.FROM = jsonObject.at("from").get<std::string>();
+                txion.TO = jsonObject.at("to").get<std::string>();
+                txion.amount = std::stoi(jsonObject.at("amount").get<std::string>());
                 (*miner)->appendTransactionToQueue(txion);
-                response->write(toReturnVal + txion.FROM + " TO: " + txion.TO + " AMOUNT: " + to_string(txion.amount));
+                response->write(toReturnVal + txion.FROM + " TO: " + txion.TO + " AMOUNT: " + std::to_string(txion.amount));
             } else {
                 content = "ERROR: Check Transaction";
                 *response << "HTTP/1.1 400 Bad Request\r\nContent-Length: " << content.length() << "\r\n\r\n" << content;
             }
         }
-        catch(const exception &e) {
+        catch(const std::exception &e) {
             *response << "HTTP/1.1 400 Bad Request\r\nContent-Length: " << strlen(e.what()) << "\r\n\r\n" << e.what();
         }
   };
 
-    server.on_error = [](shared_ptr<HttpServer::Request> /*request*/, const SimpleWeb::error_code & /*ec*/) {
+    server.on_error = [](std::shared_ptr<HttpServer::Request> /*request*/, const SimpleWeb::error_code & /*ec*/) {
     // Handle errors here
     // Note that connection timeouts will also call this handle with ec set to SimpleWeb::errc::operation_canceled
     };
 
-    thread_ptr = make_unique<thread*> (new thread([&]() {
-        // Start server
-        server.start();
-    }));
+    // thread_ptr = std::make_unique<thread*> (new thread([&]() {
+    //     // Start server
+    //     server.start();
+    // }));
 }
