@@ -10,14 +10,15 @@
 #include <math.h>
 #include <algorithm>
 #include <stdexcept>
-#include "../utils/data/base.hpp" // TODO: FIX THIS INCLUDE
+#include <base.hpp>
+#include <ecc.h>
+#include <base64.h>
 
 class Wallet {
     bool shouldListen;
     static char hexmap[];
 
     int walletActionListener();
-    void walletWrapper();
 
     [[nodiscard]] int valueFromHexChar (const char *c) noexcept { 
         int returnVal = -1;
@@ -37,13 +38,11 @@ class Wallet {
             shouldListen = false;
         };
 
-        void attachThread() {
-            walletWrapper();
-        };
+        void run();
 
-        //bool send_transaction(BaseDataSetup::TxtionDetails details);
+        bool send_transaction(BaseDataSetup::TxtionDetails details);
         void generate_ECDSA_keys();
-        //BaseDataSetup::SignedTxtion sign_ECDSA_msg(std::string_view privateKey);
+        BaseDataSetup::SignedTxtion sign_ECDSA_msg(std::string_view privateKey);
 
         std::string hexStr(unsigned char *data, size_t len) {
             std::string s(len * 2, ' ');

@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
-#include "../sha256/sha256.h" // TODO: FIX THIS INCLUDE
-#include "../json/json.hpp" // TODO: FIX THIS INCLUDE
+#include <sha256.h> // TODO: FIX THIS INCLUDE
+#include <json.hpp> // TODO: FIX THIS INCLUDE
 
 namespace BaseDataSetup {
 

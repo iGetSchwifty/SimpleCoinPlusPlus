@@ -1,8 +1,7 @@
-#include <iostream>
 #include <wallet.hpp>
 
 int main() {
   Wallet wallet;
-  wallet.attachThread();
+  wallet.run();
   return 0;
 }
