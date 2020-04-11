@@ -1,7 +1,1 @@
-.DS_Store
-.vscode/
-simpleCoin++/.DS_Store
-*.o
-app
-test
-example.json
+/bin
